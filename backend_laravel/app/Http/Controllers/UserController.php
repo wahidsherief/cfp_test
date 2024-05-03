@@ -10,6 +10,16 @@ use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
+    //  early returns (guard clauses)
+    private function findUserOrFail($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        return $user;
+    }
+
     public function index()
     {
         $users = User::all();
@@ -34,15 +44,5 @@ class UserController extends Controller
         $user = $this->findUserOrFail($id);
         $user->delete();
         return response()->json(['message' => 'User deleted successfully'], 200);
-    }
-
-    //  early returns (guard clauses)
-    private function findUserOrFail($id)
-    {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
-        return $user;
     }
 }

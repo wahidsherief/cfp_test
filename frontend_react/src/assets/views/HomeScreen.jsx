@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Typography, CircularProgress } from '@mui/material';
-import { Alert } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Typography, CircularProgress } from '@mui/material';
 import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarProvider';
@@ -91,7 +90,7 @@ const TableRowData = ({ row, handleDelete }) => {
     );
 };
 
-export const Home = () => {
+export const HomeScreen = () => {
 
     const [rows, setRows] = useState([])
     const [loading, setLoading] = useState(true)

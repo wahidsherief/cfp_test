@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { CreateForm } from './assets/views/CreateForm'
 import { UpdateForm } from './assets/views/UpdateForm'
 import { LayoutComponent } from './assets/components/LayoutComponent'
-import { Home } from './assets/views/HomeScreen'
+import { HomeScreen } from './assets/views/HomeScreen'
 
 const router = createBrowserRouter([
     {
@@ -11,7 +11,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '/',
-                element: <Home />,
+                element: <HomeScreen />,
             },
             {
                 path: '/create',
