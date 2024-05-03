@@ -1,10 +1,14 @@
+import React from 'react';
 import { Outlet } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, Snackbar, Alert } from '@mui/material';
 import { Link } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { useSnackbar } from '../contexts/SnackbarProvider';
 
-export const Layout = () => {
+export const LayoutComponent = () => {
+    const { closeSnackbar, snackbarOpen, snackbarMessage, snackbarSeverity } = useSnackbar()
+
     return (
         <>
             <AppBar position="static" sx={{ boxShadow: 'none', bgcolor: 'transparent', marginBottom: 10 }}>
@@ -25,7 +29,6 @@ export const Layout = () => {
                         >
                             Home
                         </Button>
-
                         <Button
                             component={Link}
                             to="/create"
@@ -39,6 +42,16 @@ export const Layout = () => {
                 </Toolbar>
             </AppBar>
             <Outlet />
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={closeSnackbar}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={closeSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
-}
+};

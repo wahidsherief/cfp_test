@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconB
 import { Alert } from '@mui/material';
 import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { useSnackbar } from '../contexts/SnackbarProvider';
 
 const TableHeader = () => {
     return (
@@ -93,11 +93,10 @@ const TableRowData = ({ row, handleDelete }) => {
 
 export const Home = () => {
 
-    const [rows, setRows] = useState([]);
-    const [loading, setLoading] = useState(true); // State for loading status
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const [rows, setRows] = useState([])
+    const [loading, setLoading] = useState(true)
+    const { openSnackbar } = useSnackbar();
+
 
     useEffect(() => {
         fetchData();
@@ -106,63 +105,42 @@ export const Home = () => {
     const fetchData = () => {
         axios.get('http://localhost:8000/api/users')
             .then(response => {
-                console.log(response.data);
-                setRows(response.data);
+                setRows(response.data)
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
-                setSnackbarSeverity('error');
-                setSnackbarMessage('Error fetching data');
-                setSnackbarOpen(true);
+                openSnackbar('Error fetching data', 'error')
             })
             .finally(() => {
-                setLoading(false); // Set loading to false when data fetching is done
+                setLoading(false)
             });
     };
 
     const handleDelete = (id) => {
         axios.delete(`http://localhost:8000/api/users/${id}`)
             .then(response => {
-                // Handle deletion success
-                console.log('Record deleted successfully');
-                setSnackbarSeverity('success');
-                setSnackbarMessage('Record deleted successfully');
-                setSnackbarOpen(true);
-                fetchData(); // Fetch data again after deletion
+                openSnackbar('User deleted successfully', 'success')
+                fetchData();
             })
             .catch(error => {
-                console.error('Error deleting data:', error);
-                setSnackbarSeverity('error');
-                setSnackbarMessage('Error deleting record');
-                setSnackbarOpen(true);
+                openSnackbar('Error deleting data', 'error')
             });
     }
 
-    const handleSnackbarClose = () => {
-        setSnackbarOpen(false);
-    };
-
-    const navigate = useNavigate();
-
     return (
         <>
-            {loading ? ( // Show CircularProgress if loading
+            {loading ? (
                 <Grid container justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
                     <CircularProgress />
                 </Grid>
             ) : (
                 <>
                     {rows.length === 0 ? (
-                        <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+                        <Grid container justifyContent="center" alignItems="center" spacing={2}>
                             <Grid item>
-                                <Typography variant="body1">No user found</Typography>
-                            </Grid>
-                            <Grid item>
-                                <Button variant="outlined" startIcon={<AddOutlinedIcon />} color="primary" onClick={() => navigate('/form')}>
-                                    Add User
-                                </Button>
+                                <Typography variant="body1" sx={{ fontStyle: 'italic', color: '#ccc' }}>No user found</Typography>
                             </Grid>
                         </Grid>
+
                     ) : (
                         <TableContainer>
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -175,11 +153,7 @@ export const Home = () => {
                             </Table>
                         </TableContainer>
                     )}
-                    <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-                            {snackbarMessage}
-                        </Alert>
-                    </Snackbar>
+
                 </>
             )}
         </>
