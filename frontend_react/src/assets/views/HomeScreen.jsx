@@ -6,6 +6,8 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconB
 import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarProvider';
+import { API_URL } from '../../config';
+import { AxiosInstance } from '../../config';
 
 
 const TableHeader = () => {
@@ -103,7 +105,7 @@ export const HomeScreen = () => {
     }, []);
 
     const fetchData = () => {
-        axios.get('http://localhost:8081/api/users')
+        AxiosInstance.get(`/users`)
             .then(response => {
                 setRows(response.data)
             })
@@ -116,7 +118,7 @@ export const HomeScreen = () => {
     };
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:8000/api/users/${id}`)
+        AxiosInstance.delete(`/users/${id}`)
             .then(response => {
                 openSnackbar('User deleted successfully', 'success')
                 fetchData();

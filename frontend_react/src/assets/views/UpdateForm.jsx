@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { TextField, Button, Grid } from '@mui/material';
 import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarProvider';
+import { AxiosInstance } from '../../config';
 
 const FormField = ({ label, name, type, value, onChange }) => {
     return (
@@ -42,7 +42,7 @@ export const UpdateForm = () => {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:8081/api/users/${formData.id}`, values)
+        AxiosInstance.put(`/users/${formData.id}`, values)
             .then(response => {
                 setForm(null)
                 openSnackbar('Data updated successfully', 'success')

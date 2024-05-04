@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { TextField, Button, Grid } from '@mui/material';
 import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarProvider';
+import { AxiosInstance } from '../../config';
 
 const FormField = ({ label, name, type, value, onChange }) => {
     return (
@@ -48,7 +48,7 @@ export const CreateForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8081/api/users', values)
+        AxiosInstance.post(`/users`, values)
             .then(response => {
                 setForm(initialFormValues)
                 openSnackbar('Data inserted successfully', 'success');
