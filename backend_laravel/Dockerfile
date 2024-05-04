@@ -1,40 +1,37 @@
-# Pull the base image with PHP and Apache
-FROM php:8.1-apache
+# Use PHP 8.1 official image
+FROM php:8.1
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Set the working directory in the container
+# Set working directory
 WORKDIR /var/www/html
 
-# Copy the application code to the container
-COPY . /var/www/html
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd pdo_mysql mbstring zip exif pcntl bcmath opcache
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install Laravel dependencies
-RUN composer install
+# Copy project files
+COPY . .
 
-# Change permissions to the web directory
-RUN chown -R www-data:www-data /var/www/html
+# Install PHP dependencies
+RUN composer install --no-scripts --no-autoloader
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Copy wait-for-it script
+COPY wait-for-it.sh /usr/bin/wait-for-it
+RUN chmod +x /usr/bin/wait-for-it
 
-# Expose port 80
-EXPOSE 80
+# Wait for the database to be ready with a longer timeout
+CMD ["wait-for-it", "-t", "60", "database:3306", "--", "php", "artisan", "migrate", "--force"]
 
-# Start Apache in the foreground
-CMD ["apache2-foreground"]

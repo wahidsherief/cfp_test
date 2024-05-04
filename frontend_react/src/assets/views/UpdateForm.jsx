@@ -42,7 +42,7 @@ export const UpdateForm = () => {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-        axios.put(`http://localhost:8000/api/users/${formData.id}`, values)
+        axios.put(`http://localhost:8081/api/users/${formData.id}`, values)
             .then(response => {
                 setForm(null)
                 openSnackbar('Data updated successfully', 'success')

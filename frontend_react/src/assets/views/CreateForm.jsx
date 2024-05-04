@@ -48,7 +48,7 @@ export const CreateForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8000/api/users', values)
+        axios.post('http://localhost:8081/api/users', values)
             .then(response => {
                 setForm(initialFormValues)
                 openSnackbar('Data inserted successfully', 'success');

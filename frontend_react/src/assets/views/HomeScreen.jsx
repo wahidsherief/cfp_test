@@ -7,6 +7,7 @@ import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarProvider';
 
+
 const TableHeader = () => {
     return (
         <TableHead sx={{ '& th': { fontWeight: 'bold' } }}>
@@ -102,7 +103,7 @@ export const HomeScreen = () => {
     }, []);
 
     const fetchData = () => {
-        axios.get('http://localhost:8000/api/users')
+        axios.get('http://localhost:8081/api/users')
             .then(response => {
                 setRows(response.data)
             })

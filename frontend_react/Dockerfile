@@ -1,26 +1,20 @@
-# Use Node.js as a base image
-FROM node:alpine
+# Use Node.js official image
+FROM node:latest
 
-# Set the working directory in the container
+# Set working directory
 WORKDIR /app
 
-# Copy the package.json and package-lock.json
-COPY package.json package-lock.json ./
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Install dependencies
+# Install npm dependencies
 RUN npm install
 
-# Copy the rest of your app's source code
+# Copy project files
 COPY . .
 
-# Build the application
-RUN npm run build
-
-# Install serve to serve the build folder
-RUN npm install -g serve
-
-# Expose the port the app runs on
+# Expose port 3000
 EXPOSE 3000
 
-# Run the application
-CMD ["serve", "-s", "build"]
+# Start React development server
+CMD ["npm", "start"]
