@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, Grid, Typography, CircularProgress } from '@mui/material';
 import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarProvider';
-import { API_URL } from '../../config';
 import { AxiosInstance } from '../../config';
+import { useAlert } from '../contexts/AlertProvider';
 
 
 const TableHeader = () => {
@@ -98,9 +97,11 @@ export const HomeScreen = () => {
     const [rows, setRows] = useState([])
     const [loading, setLoading] = useState(true)
     const { openSnackbar } = useSnackbar();
+    const { setErrors } = useAlert();
 
 
     useEffect(() => {
+        setErrors({});
         fetchData();
     }, []);
 

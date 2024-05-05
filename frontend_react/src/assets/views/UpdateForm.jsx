@@ -3,7 +3,10 @@ import { TextField, Button, Grid } from '@mui/material';
 import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarProvider';
+import { useAlert } from '../contexts/AlertProvider';
 import { AxiosInstance } from '../../config';
+
+const today = new Date().toISOString().split('T')[0];
 
 const FormField = ({ label, name, type, value, onChange }) => {
     return (
@@ -19,6 +22,9 @@ const FormField = ({ label, name, type, value, onChange }) => {
             InputLabelProps={{
                 shrink: true,
             }}
+            inputProps={{
+                max: today, // Set max attribute to today's date
+            }}
         />
     );
 };
@@ -27,6 +33,7 @@ export const UpdateForm = () => {
     const { formData, setForm } = useFormContext();
     const navigate = useNavigate();
     const { openSnackbar } = useSnackbar();
+    const { setErrors } = useAlert();
     const [values, setValues] = useState({ ...formData });
 
     useEffect(() => {
@@ -45,10 +52,14 @@ export const UpdateForm = () => {
         AxiosInstance.put(`/users/${formData.id}`, values)
             .then(response => {
                 setForm(null)
+                setErrors({});
                 openSnackbar('Data updated successfully', 'success')
                 navigate('/')
             })
             .catch(error => {
+                if (error.response && error.response.data && error.response.data.errors) {
+                    setErrors(error.response.data.errors);
+                }
                 openSnackbar('Error updating data', 'error')
             });
     };

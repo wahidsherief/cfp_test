@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -15,34 +15,51 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            abort(404, 'User not found');
         }
         return $user;
     }
 
     public function index()
     {
-        $users = User::all();
-        return response()->json($users);
+        return response()->json($this->getCachedUsers());
     }
 
     public function store(StoreUserRequest $request)
     {
         $user = User::create($request->validated());
-        return response()->json($user, 201);
+        $this->clearUserCache();
+        return response()->json($user, Response::HTTP_CREATED);
     }
 
     public function update(UpdateUserRequest $request, $id)
     {
         $user = $this->findUserOrFail($id);
         $user->update($request->validated());
-        return response()->json($user, 200);
+        $this->clearUserCache();
+        return response()->json($user);
     }
 
     public function destroy($id)
     {
         $user = $this->findUserOrFail($id);
         $user->delete();
-        return response()->json(['message' => 'User deleted successfully'], 200);
+        $this->clearUserCache();
+        return response()->json(['message' => 'User deleted successfully']);
+    }
+
+    // get all users
+    private function getCachedUsers()
+    {
+        $cacheDuration = 3600;
+        return Cache::remember('users.all', $cacheDuration, function () {
+            return User::all();
+        });
+    }
+
+    // clear user cache
+    private function clearUserCache()
+    {
+        Cache::forget('users.all');
     }
 }

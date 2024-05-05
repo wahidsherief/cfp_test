@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useSnackbar } from '../contexts/SnackbarProvider';
+import { useAlert } from '../contexts/AlertProvider';
 
 export const LayoutComponent = () => {
     const { closeSnackbar, snackbarOpen, snackbarMessage, snackbarSeverity } = useSnackbar()
+    const { errors } = useAlert();
 
     return (
         <>
@@ -15,7 +17,7 @@ export const LayoutComponent = () => {
                 <Toolbar>
                     <Box sx={{ mr: "auto" }}>
                         <Typography variant="h5" component="div" sx={{ color: 'black', fontWeight: 'bold' }}>
-                            CFP TEST
+                            CFP ENERGY TEST
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', ml: 'auto' }}>
@@ -41,7 +43,28 @@ export const LayoutComponent = () => {
                     </Box>
                 </Toolbar>
             </AppBar>
+
+            {Object.keys(errors).length > 0 && (
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    mb: 4
+                }}>
+                    <Alert severity="error" sx={{
+                        width: { xs: '100%', sm: '50%' },
+                        textAlign: 'left',
+                    }}>
+                        <ul>
+                            {Object.keys(errors).map(field => (
+                                <li key={field}>{errors[field].join(', ')}</li>
+                            ))}
+                        </ul>
+                    </Alert>
+                </Box>
+            )}
+
             <Outlet />
+
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}

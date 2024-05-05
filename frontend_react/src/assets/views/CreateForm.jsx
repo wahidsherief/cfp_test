@@ -3,7 +3,10 @@ import { TextField, Button, Grid } from '@mui/material';
 import { useFormContext } from '../contexts/FormProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../contexts/SnackbarProvider';
+import { useAlert } from '../contexts/AlertProvider';
 import { AxiosInstance } from '../../config';
+
+const today = new Date().toISOString().split('T')[0];
 
 const FormField = ({ label, name, type, value, onChange }) => {
     return (
@@ -17,6 +20,9 @@ const FormField = ({ label, name, type, value, onChange }) => {
             margin="normal"
             InputLabelProps={{
                 shrink: true,
+            }}
+            inputProps={{
+                max: today, // Set max attribute to today's date
             }}
         />
     );
@@ -37,6 +43,7 @@ export const CreateForm = () => {
     };
 
     const { openSnackbar } = useSnackbar();
+    const { setErrors } = useAlert();
     const [values, setValues] = useState(initialFormValues);
 
     const handleChange = (e) => {
@@ -50,11 +57,15 @@ export const CreateForm = () => {
         e.preventDefault();
         AxiosInstance.post(`/users`, values)
             .then(response => {
+                setErrors({});
                 setForm(initialFormValues)
                 openSnackbar('Data inserted successfully', 'success');
                 navigate('/');
             })
             .catch(error => {
+                if (error.response && error.response.data && error.response.data.errors) {
+                    setErrors(error.response.data.errors);
+                }
                 openSnackbar('Error creating data', 'error');
             });
     };
