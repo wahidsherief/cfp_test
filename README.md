@@ -1,7 +1,3 @@
-Here's the revised README with the project name "CFP ENERGY TEST: CRUD APP", condensed features section, information about using Docker, and a new section for Docker Compose guide:
-
----
-
 # CFP ENERGY TEST: CRUD APP
 
 ## Overview
