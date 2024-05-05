@@ -54,7 +54,7 @@
   
 - **Context API for State Management:** Implemented for efficient centralize data management.
   
-- **Enhanced UX:** Incorporated loading indicators, alerts, and snackbars from Material-UI.
+- **Enhanced UX:** Incorporated loading indicators, alerts, and snackbars for feedback from Material-UI.
 
 ### Installation and Usage
 
