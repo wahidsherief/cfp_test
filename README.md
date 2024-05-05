@@ -66,11 +66,11 @@
 
 **Run the application:**
    
-   docker-compose up -d
+   `docker-compose up -d`
    
    This will build and start the backend and frontend containers, making the application accessible through the specified ports (8081 for backend and 5173 for frontend).
 
 **Stop the application:**
    
-   docker-compose down
+   `docker-compose down`
 
